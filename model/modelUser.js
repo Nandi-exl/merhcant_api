@@ -27,36 +27,35 @@ static getDetailUser(id){
 }
 
 
-static findUserById(id){
-    let sql = `SELECT id FROM user WHERE id = ${id}`
+static findUserByName(name){
+    let sql = `SELECT name FROM user WHERE name = "${name}"`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
+            if(err) throw err
             resolve(result)
         })
     })
 }
 
-static register (data) {
-    const dataInputs = [
-        data.name,
-        data.password,
-        data.adress,
-        data.phone_number
-    ]
+static register (data, hashedPass) {
 
-    const sql = `INSERT INTO user(
-        name,
-        password,
-        adress,
-        phone_number)
-        VALUES (?, ?, ?, ?)`
+    const dataInputs = {
+        name :data.name,
+        password : hashedPass,
+        adress : data.adress,
+        phone_number : data.phone_number
+    }
+
+    const sql = `INSERT INTO user set ?`
     return new Promise((resolve, reject) => {
-        db.query(sql, dataInputs, (err, result) => {
+        db.query(sql, [dataInputs], (err, result) => {
                 if(err) throw err
                 resolve(result)
         })
     })
 }
+
+
 
 static deleteUser(id){
     let sql = `DELETE FROM user WHERE id = ${id}` 
@@ -68,13 +67,25 @@ static deleteUser(id){
     })
 }
 
-static updateUserDetail(id, data){
+
+static findUserById(id){
+    let sql = `SELECT id FROM user WHERE id = ${id}`
+    return new Promise((resolve, reject) => {
+        db.query(sql, (err, result) => {
+            if(err) throw err
+            resolve(result)
+        })
+    })
+}
+static updateUserDetail(id, data, hashedPass){
     let dataUpdate = [
         data.name,
-        data.password,
+        hashedPass,
         data.adress,
         data.phone_number
     ]
+    
+    
     let sql = `UPDATE user SET 
                name = COALESCE(?, name),
                password = COALESCE(?, password),
@@ -84,6 +95,16 @@ static updateUserDetail(id, data){
     `
     return new Promise((resolve, reject) => {
         db.query(sql, dataUpdate, (err, result) => {
+            if(err) throw err
+            resolve(result)
+        })
+    })
+}
+
+static userLogin(name){
+    let sql = `SELECT name, password WHERE name = "${name}"`
+    return new Promise((resolve, reject) => {
+        db.query(sql, (err, result) => {
             if(err) throw err
             resolve(result)
         })
