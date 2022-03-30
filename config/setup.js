@@ -10,7 +10,7 @@ static connectDatabase() {
 
 static createTableUser(){
     let sql = `CREATE TABLE IF NOT EXISTS user (
-                id INT NOT NULL PRIMARY KEY,
+                id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 password VARCHAR(255),
                 name VARCHAR(255),
                 adress VARCHAR(255),
@@ -19,13 +19,13 @@ static createTableUser(){
     )`
     db.query(sql, (err) => {
         if(err) throw err
-        console.log("table created")
+        console.log("table user created")
     })
 }
 
 static createProductTable(){
     let sql = `CREATE TABLE IF NOT EXISTS products(
-                id INT NOT NULL PRIMARY KEY,
+                id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 name VARCHAR(255),
                 quantity INT,
                 price INT
