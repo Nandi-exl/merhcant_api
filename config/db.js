@@ -1,16 +1,10 @@
-require('dotenv').config()
 const mysql = require('mysql')
 
-const host = process.env.host
-const user = process.env.user
-const password = process.env.password
-const database = process.env.database
-
 const db = mysql.createConnection({
-    host : host,
-    user : user,
-    password : password,
-    database : database
+    host : process.env.DB_HOST,
+    user :  process.env.DB_USER,
+    password : process.env.DB_PASSWORD,
+    database : process.env.MYSQL_DATABASE
 })
 
 module.exports = db;

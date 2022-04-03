@@ -15,7 +15,8 @@ static createTableUser(){
                 name VARCHAR(255),
                 adress VARCHAR(255),
                 join_data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                phone_number INT NOT NULL
+                phone_number INT NOT NULL,
+                refresh_token TEXT
     )`
     db.query(sql, (err) => {
         if(err) throw err
@@ -40,8 +41,8 @@ static createProductTable(){
 
 const activeDataBaseFunction = [
     databaseManipulation.connectDatabase(),
-    databaseManipulation.createTableUser(),
-    databaseManipulation.createProductTable()
+    // databaseManipulation.createTableUser(),
+    // databaseManipulation.createProductTable()
 ]
 
 module.exports = activeDataBaseFunction;

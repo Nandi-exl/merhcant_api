@@ -9,7 +9,7 @@ static getAllUsers(){
             try {
                 resolve(result)
             } catch (error) {
-                reject(new Error(`${err.message}`))
+                reject(`${err.message}`)
             }
         })
     })
@@ -39,6 +39,7 @@ static findUserByName(name){
 
 static register (data, hashedPass) {
 
+    //real
     const dataInputs = {
         name :data.name,
         password : hashedPass,
@@ -50,6 +51,7 @@ static register (data, hashedPass) {
     return new Promise((resolve, reject) => {
         db.query(sql, [dataInputs], (err, result) => {
                 if(err) throw err
+                console.log(result);
                 resolve(result)
         })
     })
@@ -77,6 +79,7 @@ static findUserById(id){
         })
     })
 }
+
 static updateUserDetail(id, data, hashedPass){
     let dataUpdate = [
         data.name,
@@ -102,14 +105,16 @@ static updateUserDetail(id, data, hashedPass){
 }
 
 static userLogin(name){
-    let sql = `SELECT name, password WHERE name = "${name}"`
+    let sql = `SELECT * FROM user WHERE name = "${name}"`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             if(err) throw err
+           console.log(result);
             resolve(result)
         })
     })
 }
+
 
 }
 
