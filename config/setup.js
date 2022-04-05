@@ -8,6 +8,14 @@ static connectDatabase() {
         })
     }
 
+// static createDatabase(){
+//     let sql = `CREATE DATABASE merchant`
+//     db.query(sql, (err) => {
+//         if(err) throw err
+//         console.log("database created");
+//     })
+// }
+
 static createTableUser(){
     let sql = `CREATE TABLE IF NOT EXISTS user (
                 id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -26,10 +34,11 @@ static createTableUser(){
 
 static createProductTable(){
     let sql = `CREATE TABLE IF NOT EXISTS products(
-                id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                name VARCHAR(255),
+                id INT NOT NULL,
+                name VARCHAR(255) NOT NULL,
                 quantity INT,
-                price INT
+                price INT,
+                FOREIGN KEY (id) REFERENCES user(id)
     )`
     db.query(sql, (err) => {
         if(err) throw err

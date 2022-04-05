@@ -3,20 +3,25 @@ require('dotenv').config()
 const express = require('express')
 const port = process.env.PORT || 3000
 const app = express()
-const router = require('./router/router')
+const userRouter = require('./Api/UserApi/userRouter')
+const productRouter = require('./Api/ProductApi/productRouter')
 const bodParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
-const { verify } = require ('jsonwebtoken')
-const { hash, compare } = require('bcrypt')
+// const { verify } = require ('jsonwebtoken')
+// const { hash, compare } = require('bcrypt')
 
 const activeDataBaseFunction= require('./config/setup')
 
 
 app.use(bodParser.json())
 
-//using all router
-app.use('/', router)
+//using user router
+app.use('/', userRouter)
+
+//using product router
+app.use('/', productRouter)
+
 
 //front-end port so front and back can communicate
 app.use(

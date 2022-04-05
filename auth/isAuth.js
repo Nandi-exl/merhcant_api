@@ -1,5 +1,6 @@
 const { verify } = require('jsonwebtoken');
 
+//this way you can do the authorization in controller
 const isAuth = req => {
   const authorization = req.headers['authorization'];
   if(!authorization) throw new Error("you need to login");
@@ -17,15 +18,7 @@ module.exports = {
 
 
 
-
-
-
-
-
-
-
-
-
+// this way we need to import the auth to router as a middle ware before excuting data api
 // class Check_token {
 //   static authorize(req, res, next){
 //       let token = req.get("authorization");
