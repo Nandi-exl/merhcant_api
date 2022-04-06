@@ -75,19 +75,23 @@ static async deleteUser(req, res){
 
 static async updateUserDetail(req, res){
     try {
-        const id = req.params.id
-        const data =req.body
-        const password = req.body.password
-        const hashedPassword = await hash(password, 10)
+        const UserId = isAuth(req)
+            if(UserId !== null){
 
-        const checkUser = await User.findUserById(id)
-        if(!checkUser[0]){
-            res.status(404).json({message : `user ${id} doesnt exist`})
-            return
+                const id = req.params.id
+                const data =req.body
+                const password = req.body.password
+                const hashedPassword = await hash(password, 10)
+                
+                const checkUser = await User.findUserById(id)
+            if(!checkUser[0]){
+                res.status(404).json({message : `user ${id} doesnt exist`})
+                return
+            }
+            
+            await User.updateUserDetail(id, data, hashedPassword)
+            res.status(200).json({message : `user ${id} updated`})
         }
-
-        await User.updateUserDetail(id, data, hashedPassword)
-        res.status(200).json({message : `user ${id} updated`})
     } catch (error) {
         res.status(400).json(`${error.message}`)
     }
@@ -110,12 +114,13 @@ static async userLogin(req, res){
     const refreshToken = createRefreshToken(existUser[0].id)
 
     // //add refresh token coloumn in database when the user acces the token
-    existUser[0].refresh_token = refreshToken
-    console.log(existUser);
-
+    // existUser[0].refreshtoken = refreshToken // this only save in cookies
+    await User.pushRefreshtokenToDataBase(refreshToken, body.name)
+    
     // //send token, refresh token as cookie and accesstoken as regular response to client
     sendRefreshToken(res, refreshToken)
     sendAccessToken(req, res, accesssToken)
+    console.log(existUser);
     } catch (error) {
         res.send({
             error : `${error.message}`
@@ -131,31 +136,39 @@ static userLogOut(req, res){
 }
 
 static async refreshToken(req, res){
-    console.log(req.cookies);
     const token = req.cookies.refreshtoken;
+    console.log(token);
     //if we dont have token in out request
     if(!token){
-      return res.status(404).json({accesssToken : ""})
+        return res.status(404).json({accesssToken : "token problem"})
     }
+    console.log("Check refresh token is finished")
 
-    //we have a token, and not we verify it
+    //we have a token, and now we verify it
     let payload = null
     try {
         payload = verify(token, process.env.REFRESH_TOKEN_SECRET)
     } catch (error) {
-        return res.status(404).json({ accesssToken : ''})
+        return res.status(404).json({ accesssToken : "payload problem"})
     }
 
     //then if token is valid let check if the user is exist
     const existUser = await User.getAllUsers()
-    const checkUser = existUser.find(user => user.id === payload.id)    
-    if(!checkUser){
-        res.status(404).json({accesssToken : ''})
+    const checkUser = existUser.find(user => user.id === payload.id)  
+    console.log(checkUser.ref)  
+    try {
+        if(!checkUser){
+        res.status(404).json({accesssToken : "exist user problem"})
+        }
+    } catch (error) {
+        res.status(400).json(`${error.message}`)
     }
 
+    
+
     //user exist, check if refresh token exist in user
-    if(checkUser.refreshToken !== token){
-        res.status(404).json({accesssToken : ''})
+    if(checkUser.refreshtoken !== token){
+        res.status(404).json({accesssToken : "check user refresh token is not store in database"})
     }
 
     //token exist, create new refresh and access token

@@ -13,7 +13,10 @@ const cors = require('cors')
 
 const activeDataBaseFunction= require('./config/setup')
 
+//app use cookie-parser to show cookie value
+app.use(cookieParser())
 
+//app use body parser to show json data
 app.use(bodParser.json())
 
 //using user router

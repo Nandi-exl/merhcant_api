@@ -115,6 +115,16 @@ static userLogin(name){
     })
 }
 
+static pushRefreshtokenToDataBase(refreshtoken, name){
+    let sql = `UPDATE user SET refreshtoken = "${refreshtoken}" WHERE name = "${name}"`
+    return new Promise((resolve, reject) => {
+        db.query(sql, (err, result) => {
+            if(err) throw err;
+            resolve(result)
+        })
+    })
+}
+
 
 }
 
