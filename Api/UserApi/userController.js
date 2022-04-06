@@ -104,7 +104,7 @@ static async userLogin(req, res){
    try {
     const body = req.body
     const existUser = await User.userLogin(body.name)
-    console.log(existUser[0]);
+    // console.log(existUser[0]);
     const valid = compareSync(body.password, existUser[0].password);
     if(!valid){
         return res.status(404).json({message : `wrong password`})
@@ -155,7 +155,8 @@ static async refreshToken(req, res){
     //then if token is valid let check if the user is exist
     const existUser = await User.getAllUsers()
     const checkUser = existUser.find(user => user.id === payload.id)  
-    console.log(checkUser.ref)  
+    console.log(checkUser);
+    console.log(checkUser.refreshtoken)  
     try {
         if(!checkUser){
         res.status(404).json({accesssToken : "exist user problem"})
@@ -172,13 +173,13 @@ static async refreshToken(req, res){
     }
 
     //token exist, create new refresh and access token
-    const accessToken = createAccessToken(existUser[0].id)
-    const refreshToken = createRefreshToken(existUser[0].id)
-
+    const accessToken = createAccessToken(checkUser.id)
+    const refreshToken = createRefreshToken(checkUser.id)
+    console.log("success add token to ");
     //update refresh token on user in db
     //can add different version of refresh token too
-    existUser[0].refreshToken = refreshToken
-
+    checkUser.refreshtoken = refreshToken
+    console.log(checkUser);
     //send new refreshtoken and accesstoken
     sendRefreshToken(res, refreshToken);
     return res.send({accessToken})
