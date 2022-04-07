@@ -50,7 +50,7 @@ static async deleteProduct(req, res){
     try {
         const userId = isAuth(req)
         if(userId !== null){
-            let id = req.params.id
+            const id = req.params.id
             await Product.deleteProduct(id)
             res.status(200).json({message : `${id} is deleted`})
         }

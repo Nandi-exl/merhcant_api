@@ -2,7 +2,7 @@ const db = require('../../config/db')
 
 class Product {
 static getAllproducts(){
-    let sql = `SELECT * FROM products`
+    const sql = `SELECT * FROM products`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             try {
@@ -15,7 +15,7 @@ static getAllproducts(){
 }  
 
 static getProductDetail(id){
-    let sql = `SELECT * FROM products WHERE id = ${id}`
+    const sql = `SELECT * FROM products WHERE id = ${id}`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             try {
@@ -34,7 +34,7 @@ static addProduct(data){
         quantity : data.quantity,
         price : data.price
      }
-    let sql = `INSERT INTO products SET ?`
+    const sql = `INSERT INTO products SET ?`
     return new Promise((resolve, reject) => {
         db.query(sql, [dataImput], (err, result) => {
           if(err) throw err;
@@ -44,7 +44,7 @@ static addProduct(data){
 }
 
 static deleteProduct(id){
-    let sql = `DELETE FROM products WHERE id = ${id}`
+    const sql = `DELETE FROM products WHERE id = ${id}`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             if(err) throw err;
@@ -54,14 +54,14 @@ static deleteProduct(id){
 }
 
 static updateProduct(id, data){
-    let dataUpdate = [
+    const dataUpdate = [
         data.id,
         data.name,
         data.quantity,
         data.price
     ]
 
-    let sql = `UPDATE products SET
+    const sql = `UPDATE products SET
                id = COALESCE(?, id),
                name = COALESCE(?, name),
                quantity = COALESCE(?, quantity),

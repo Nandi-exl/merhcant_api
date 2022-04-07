@@ -128,8 +128,12 @@ static async userLogin(req, res){
     }
 }
 
-static userLogOut(req, res){
-    res.clearCookie('refreshtoken', { path : '/refresh_token'}); // clear refresh token from the cookie
+static async userLogOut(req, res){
+    const data=  req.params
+    // clear refresh token from the cookie
+    res.clearCookie('refreshtoken', { path : '/refresh_token' }); 
+    //clear toke from db
+    await User.removeRefreshToken(data.id)
     return res.json({
         message : "user log out"
     })
@@ -137,29 +141,25 @@ static userLogOut(req, res){
 
 static async refreshToken(req, res){
     const token = req.cookies.refreshtoken;
-    console.log(token);
     //if we dont have token in out request
     if(!token){
-        return res.status(404).json({accesssToken : "token problem"})
+        return res.status(404).json({accesssToken : ""})
     }
-    console.log("Check refresh token is finished")
 
     //we have a token, and now we verify it
     let payload = null
     try {
         payload = verify(token, process.env.REFRESH_TOKEN_SECRET)
     } catch (error) {
-        return res.status(404).json({ accesssToken : "payload problem"})
+        return res.status(404).json({ accesssToken : ""})
     }
 
     //then if token is valid let check if the user is exist
     const existUser = await User.getAllUsers()
     const checkUser = existUser.find(user => user.id === payload.id)  
-    console.log(checkUser);
-    console.log(checkUser.refreshtoken)  
     try {
         if(!checkUser){
-        res.status(404).json({accesssToken : "exist user problem"})
+        res.status(404).json({accesssToken : ""})
         }
     } catch (error) {
         res.status(400).json(`${error.message}`)
@@ -169,17 +169,15 @@ static async refreshToken(req, res){
 
     //user exist, check if refresh token exist in user
     if(checkUser.refreshtoken !== token){
-        res.status(404).json({accesssToken : "check user refresh token is not store in database"})
+        res.status(404).json({accesssToken : ""})
     }
 
     //token exist, create new refresh and access token
     const accessToken = createAccessToken(checkUser.id)
     const refreshToken = createRefreshToken(checkUser.id)
-    console.log("success add token to ");
     //update refresh token on user in db
     //can add different version of refresh token too
     checkUser.refreshtoken = refreshToken
-    console.log(checkUser);
     //send new refreshtoken and accesstoken
     sendRefreshToken(res, refreshToken);
     return res.send({accessToken})

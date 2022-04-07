@@ -18,7 +18,7 @@ static getAllUsers(){
 
 
 static getDetailUser(id){
-    let sql = `SELECT * FROM user where id = ${id}`
+    const sql = `SELECT * FROM user where id = ${id}`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             resolve(result)
@@ -28,7 +28,7 @@ static getDetailUser(id){
 
 
 static findUserByName(name){
-    let sql = `SELECT name FROM user WHERE name = "${name}"`
+    const sql = `SELECT name FROM user WHERE name = "${name}"`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             if(err) throw err
@@ -60,7 +60,7 @@ static register (data, hashedPass) {
 
 
 static deleteUser(id){
-    let sql = `DELETE FROM user WHERE id = ${id}` 
+    const sql = `DELETE FROM user WHERE id = ${id}` 
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             if(err) throw err
@@ -71,7 +71,7 @@ static deleteUser(id){
 
 
 static findUserById(id){
-    let sql = `SELECT id FROM user WHERE id = ${id}`
+    const sql = `SELECT id FROM user WHERE id = ${id}`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             if(err) throw err
@@ -81,7 +81,7 @@ static findUserById(id){
 }
 
 static updateUserDetail(id, data, hashedPass){
-    let dataUpdate = [
+    const dataUpdate = [
         data.name,
         hashedPass,
         data.adress,
@@ -105,7 +105,7 @@ static updateUserDetail(id, data, hashedPass){
 }
 
 static userLogin(name){
-    let sql = `SELECT * FROM user WHERE name = "${name}"`
+    const sql = `SELECT * FROM user WHERE name = "${name}"`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             if(err) throw err
@@ -116,7 +116,7 @@ static userLogin(name){
 }
 
 static pushRefreshtokenToDataBase(refreshtoken, name){
-    let sql = `UPDATE user SET refreshtoken = "${refreshtoken}" WHERE name = "${name}"`
+    const sql = `UPDATE user SET refreshtoken = "${refreshtoken}" WHERE name = "${name}"`
     return new Promise((resolve, reject) => {
         db.query(sql, (err, result) => {
             if(err) throw err;
@@ -125,7 +125,15 @@ static pushRefreshtokenToDataBase(refreshtoken, name){
     })
 }
 
-
+static removeRefreshToken(id){
+    const sql = `UPDATE user SET refreshtoken = NULL WHERE id = ${id}`;
+    return new Promise((resolve, reject) => {
+        db.query(sql, (err, result) => {
+            if(err) throw err;
+            resolve(result)
+        })
+    })
+}
 }
 
 module.exports = User;

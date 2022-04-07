@@ -18,7 +18,7 @@ userRouter.post('/register', Controller.register) // not protected cause all peo
 //login user
 userRouter.post('/login', Controller.userLogin) // not protected
 //logOut user
-userRouter.post('/logout', Controller.userLogOut) // not protected
+userRouter.post('/logout/:id', Controller.userLogOut) // not protected
 //deleteuser
 userRouter.delete('/delete-user/:id', Controller.deleteUser) // Protected
 //updatespecific user data
